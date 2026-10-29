@@ -1,0 +1,6 @@
+com.oem.car.feature.dashboard.test.dashboard-androidTest-0 E:\gitHub\automotiveProject\feature\dashboard\build\generated\res\resValues\androidTest\debug
+com.oem.car.feature.dashboard.test.dashboard-updated_navigation_xml-1 E:\gitHub\automotiveProject\feature\dashboard\build\generated\updated_navigation_xml\debugAndroidTest
+com.oem.car.feature.dashboard.test.dashboard-mergeDebugAndroidTestResources-2 E:\gitHub\automotiveProject\feature\dashboard\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.oem.car.feature.dashboard.test.dashboard-mergeDebugAndroidTestResources-3 E:\gitHub\automotiveProject\feature\dashboard\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.oem.car.feature.dashboard.test.dashboard-debugAndroidTest-4 E:\gitHub\automotiveProject\feature\dashboard\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
+gradleHome-0 D:\.gradle

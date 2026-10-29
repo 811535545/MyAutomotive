@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.oem.car.middleware.vehicle.test" >
+
+    <uses-sdk
+        android:minSdkVersion="28"
+        android:targetSdkVersion="28" />
+
+    <instrumentation
+        android:name="androidx.test.runner.AndroidJUnitRunner"
+        android:functionalTest="false"
+        android:handleProfiling="false"
+        android:label="Tests for com.oem.car.middleware.vehicle.test"
+        android:targetPackage="com.oem.car.middleware.vehicle.test" />
+
+    <application
+        android:debuggable="true"
+        android:extractNativeLibs="false" >
+        <service
+            android:name="com.oem.car.middleware.vehicle.VehicleCoreService"
+            android:exported="false"
+            android:process=":vehicle" />
+    </application>
+
+</manifest>

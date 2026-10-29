@@ -1,0 +1,6 @@
+com.oem.car.core.health.test.health-androidTest-0 E:\gitHub\automotiveProject\core\health\build\generated\res\resValues\androidTest\debug
+com.oem.car.core.health.test.health-updated_navigation_xml-1 E:\gitHub\automotiveProject\core\health\build\generated\updated_navigation_xml\debugAndroidTest
+com.oem.car.core.health.test.health-mergeDebugAndroidTestResources-2 E:\gitHub\automotiveProject\core\health\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.oem.car.core.health.test.health-mergeDebugAndroidTestResources-3 E:\gitHub\automotiveProject\core\health\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.oem.car.core.health.test.health-debugAndroidTest-4 E:\gitHub\automotiveProject\core\health\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
+gradleHome-0 D:\.gradle

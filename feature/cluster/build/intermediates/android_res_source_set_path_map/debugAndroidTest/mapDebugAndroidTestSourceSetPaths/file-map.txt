@@ -1,0 +1,6 @@
+com.oem.car.feature.cluster.test.cluster-androidTest-0 E:\gitHub\automotiveProject\feature\cluster\build\generated\res\resValues\androidTest\debug
+com.oem.car.feature.cluster.test.cluster-updated_navigation_xml-1 E:\gitHub\automotiveProject\feature\cluster\build\generated\updated_navigation_xml\debugAndroidTest
+com.oem.car.feature.cluster.test.cluster-mergeDebugAndroidTestResources-2 E:\gitHub\automotiveProject\feature\cluster\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.oem.car.feature.cluster.test.cluster-mergeDebugAndroidTestResources-3 E:\gitHub\automotiveProject\feature\cluster\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.oem.car.feature.cluster.test.cluster-debugAndroidTest-4 E:\gitHub\automotiveProject\feature\cluster\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
+gradleHome-0 D:\.gradle

@@ -1,0 +1,6 @@
+com.oem.car.core.digitalkey.test.digitalkey-androidTest-0 E:\gitHub\automotiveProject\core\digitalkey\build\generated\res\resValues\androidTest\debug
+com.oem.car.core.digitalkey.test.digitalkey-updated_navigation_xml-1 E:\gitHub\automotiveProject\core\digitalkey\build\generated\updated_navigation_xml\debugAndroidTest
+com.oem.car.core.digitalkey.test.digitalkey-mergeDebugAndroidTestResources-2 E:\gitHub\automotiveProject\core\digitalkey\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.oem.car.core.digitalkey.test.digitalkey-mergeDebugAndroidTestResources-3 E:\gitHub\automotiveProject\core\digitalkey\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.oem.car.core.digitalkey.test.digitalkey-debugAndroidTest-4 E:\gitHub\automotiveProject\core\digitalkey\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
+gradleHome-0 D:\.gradle

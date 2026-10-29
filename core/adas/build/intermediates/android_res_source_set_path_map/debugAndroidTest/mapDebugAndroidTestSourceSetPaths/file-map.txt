@@ -1,0 +1,6 @@
+com.oem.car.core.adas.test.adas-androidTest-0 E:\gitHub\automotiveProject\core\adas\build\generated\res\resValues\androidTest\debug
+com.oem.car.core.adas.test.adas-updated_navigation_xml-1 E:\gitHub\automotiveProject\core\adas\build\generated\updated_navigation_xml\debugAndroidTest
+com.oem.car.core.adas.test.adas-mergeDebugAndroidTestResources-2 E:\gitHub\automotiveProject\core\adas\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.oem.car.core.adas.test.adas-mergeDebugAndroidTestResources-3 E:\gitHub\automotiveProject\core\adas\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.oem.car.core.adas.test.adas-debugAndroidTest-4 E:\gitHub\automotiveProject\core\adas\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
+gradleHome-0 D:\.gradle

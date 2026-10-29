@@ -1,0 +1,21 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.oem.car.middleware.vehicle" >
+4
+5    <uses-sdk android:minSdkVersion="28" />
+5-->INJECTED
+5-->INJECTED
+6
+7    <application>
+7-->E:\gitHub\automotiveProject\core\vehicle\src\main\AndroidManifest.xml:3:5-8:19
+8        <service
+8-->E:\gitHub\automotiveProject\core\vehicle\src\main\AndroidManifest.xml:4:9-7:42
+9            android:name="com.oem.car.middleware.vehicle.VehicleCoreService"
+9-->E:\gitHub\automotiveProject\core\vehicle\src\main\AndroidManifest.xml:5:13-77
+10            android:exported="false"
+10-->E:\gitHub\automotiveProject\core\vehicle\src\main\AndroidManifest.xml:6:13-37
+11            android:process=":vehicle" />
+11-->E:\gitHub\automotiveProject\core\vehicle\src\main\AndroidManifest.xml:7:13-39
+12    </application>
+13
+14</manifest>

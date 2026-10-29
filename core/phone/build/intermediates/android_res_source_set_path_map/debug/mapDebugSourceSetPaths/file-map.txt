@@ -1,0 +1,10 @@
+com.oem.car.core.phone-pngs-0 E:\gitHub\automotiveProject\core\phone\build\generated\res\pngs\debug
+com.oem.car.core.phone-resValues-1 E:\gitHub\automotiveProject\core\phone\build\generated\res\resValues\debug
+com.oem.car.core.phone-updated_navigation_xml-2 E:\gitHub\automotiveProject\core\phone\build\generated\updated_navigation_xml\debug
+com.oem.car.core.phone-mergeDebugResources-3 E:\gitHub\automotiveProject\core\phone\build\intermediates\incremental\debug\mergeDebugResources\merged.dir
+com.oem.car.core.phone-mergeDebugResources-4 E:\gitHub\automotiveProject\core\phone\build\intermediates\incremental\debug\mergeDebugResources\stripped.dir
+com.oem.car.core.phone-debug-5 E:\gitHub\automotiveProject\core\phone\build\intermediates\merged_res\debug\mergeDebugResources
+com.oem.car.core.phone-debug-6 E:\gitHub\automotiveProject\core\phone\build\intermediates\packaged_res\debug\packageDebugResources
+com.oem.car.core.phone-debug-7 E:\gitHub\automotiveProject\core\phone\src\debug\res
+com.oem.car.core.phone-main-8 E:\gitHub\automotiveProject\core\phone\src\main\res
+gradleHome-0 D:\.gradle

@@ -1,0 +1,6 @@
+com.oem.car.core.account.test.account-androidTest-0 E:\gitHub\automotiveProject\core\account\build\generated\res\resValues\androidTest\debug
+com.oem.car.core.account.test.account-updated_navigation_xml-1 E:\gitHub\automotiveProject\core\account\build\generated\updated_navigation_xml\debugAndroidTest
+com.oem.car.core.account.test.account-mergeDebugAndroidTestResources-2 E:\gitHub\automotiveProject\core\account\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.oem.car.core.account.test.account-mergeDebugAndroidTestResources-3 E:\gitHub\automotiveProject\core\account\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.oem.car.core.account.test.account-debugAndroidTest-4 E:\gitHub\automotiveProject\core\account\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
+gradleHome-0 D:\.gradle

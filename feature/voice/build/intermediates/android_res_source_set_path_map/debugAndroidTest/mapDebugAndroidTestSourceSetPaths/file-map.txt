@@ -1,0 +1,6 @@
+com.oem.car.feature.voice.test.voice-androidTest-0 E:\gitHub\automotiveProject\feature\voice\build\generated\res\resValues\androidTest\debug
+com.oem.car.feature.voice.test.voice-updated_navigation_xml-1 E:\gitHub\automotiveProject\feature\voice\build\generated\updated_navigation_xml\debugAndroidTest
+com.oem.car.feature.voice.test.voice-mergeDebugAndroidTestResources-2 E:\gitHub\automotiveProject\feature\voice\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.oem.car.feature.voice.test.voice-mergeDebugAndroidTestResources-3 E:\gitHub\automotiveProject\feature\voice\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.oem.car.feature.voice.test.voice-debugAndroidTest-4 E:\gitHub\automotiveProject\feature\voice\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
+gradleHome-0 D:\.gradle

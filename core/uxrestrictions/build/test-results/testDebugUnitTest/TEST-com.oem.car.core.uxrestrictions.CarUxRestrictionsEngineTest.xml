@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.oem.car.core.uxrestrictions.CarUxRestrictionsEngineTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-28T06:23:22" hostname="DESKTOP-673I0UP" time="0.012">
+  <properties/>
+  <testcase name="moving speed blocks video and limits list" classname="com.oem.car.core.uxrestrictions.CarUxRestrictionsEngineTest" time="0.011"/>
+  <testcase name="state recovers after parking" classname="com.oem.car.core.uxrestrictions.CarUxRestrictionsEngineTest" time="0.0"/>
+  <testcase name="high speed limits list to five" classname="com.oem.car.core.uxrestrictions.CarUxRestrictionsEngineTest" time="0.0"/>
+  <testcase name="drive gear blocks video at standstill" classname="com.oem.car.core.uxrestrictions.CarUxRestrictionsEngineTest" time="0.0"/>
+  <testcase name="parked state allows video and long lists" classname="com.oem.car.core.uxrestrictions.CarUxRestrictionsEngineTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
