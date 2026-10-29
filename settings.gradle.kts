@@ -23,5 +23,38 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "myCarApp"
+
 include(":app")
- 
+
+// Core Libraries (Middleware, Data, System Services)
+include(":core:common")
+include(":core:model")
+include(":core:aidl")
+include(":core:vehicle")
+include(":core:vehicle-service")
+include(":core:uxrestrictions")
+include(":core:power")
+include(":core:audio")
+include(":core:digitalkey")
+include(":core:telematics")
+include(":core:adas")
+include(":core:account")
+include(":core:navigation")
+include(":core:phone")
+include(":core:energy")
+include(":core:health")
+include(":core:data")
+include(":core:designsystem")
+
+//Feature Modules (Multi-Screen Cockpit Apps)
+include(":feature:dashboard")
+include(":feature:cluster")
+include(":feature:climate")
+include(":feature:media")
+include(":feature:connected")
+include(":feature:navigation")
+include(":feature:phone")
+include(":feature:energy")
+include(":feature:health")
+include(":feature:settings")
+include(":feature:voice")

@@ -1,6 +1,5 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
 }
 android {
     namespace = "com.oem.car.core.vehicleservice"
@@ -26,6 +25,6 @@ dependencies {
     implementation(project(":core:audio"))
     implementation(project(":core:navigation"))
     implementation(project(":core:power"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
 }

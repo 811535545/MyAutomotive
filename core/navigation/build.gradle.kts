@@ -1,6 +1,5 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
 }
 android {
     namespace = "com.oem.car.core.navigation"
@@ -19,5 +18,5 @@ kotlin {
 }
 dependencies {
     implementation(project(":core:model"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation(libs.kotlinx.coroutines.core)
 }

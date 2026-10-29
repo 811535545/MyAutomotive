@@ -1,6 +1,5 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
 }
 android {
     namespace = "com.oem.car.core.data"
@@ -32,5 +31,5 @@ dependencies {
     implementation(project(":core:phone"))
     implementation(project(":core:energy"))
     implementation(project(":core:health"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation(libs.kotlinx.coroutines.core)
 }
