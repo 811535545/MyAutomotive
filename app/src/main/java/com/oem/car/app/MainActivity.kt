@@ -24,40 +24,38 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-//import androidx.activity.compose.setContent
-//import androidx.compose.foundation.background
-//import androidx.compose.foundation.horizontalScroll
-//import androidx.compose.foundation.layout.*
-//import androidx.compose.foundation.rememberScrollState
-//import androidx.compose.material3.*
-//import androidx.compose.runtime.*
-//import androidx.compose.ui.Alignment
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.graphics.Color
-//import androidx.compose.ui.res.painterResource
-//import androidx.compose.ui.unit.dp
-//import androidx.compose.ui.unit.sp
-//import com.oem.car.core.data.VehicleRepositoryImpl
-//import com.oem.car.core.designsystem.CarButton
-//import com.oem.car.core.designsystem.CarTheme
-//import com.oem.car.feature.climate.ClimateScreen
-//import com.oem.car.feature.cluster.ClusterScreen
-//import com.oem.car.feature.connected.ConnectedScreen
-//import com.oem.car.feature.dashboard.DashboardScreen
-//import com.oem.car.feature.energy.EnergyScreen
-//import com.oem.car.feature.health.HealthScreen
-//import com.oem.car.feature.media.MediaScreen
-//import com.oem.car.feature.navigation.NavigationScreen
-//import com.oem.car.feature.phone.PhoneScreen
-//import com.oem.car.feature.settings.SettingsScreen
-//import com.oem.car.feature.voice.VoiceAssistantOverlay
+import com.oem.car.core.data.VehicleRepositoryImpl
+import com.oem.car.core.designsystem.CarButton
+import com.oem.car.core.designsystem.CarTheme
+import com.oem.car.feature.climate.ClimateScreen
+import com.oem.car.feature.cluster.ClusterScreen
+import com.oem.car.feature.connected.ConnectedScreen
+import com.oem.car.feature.dashboard.DashboardScreen
+import com.oem.car.feature.energy.EnergyScreen
+import com.oem.car.feature.health.HealthScreen
+import com.oem.car.feature.media.MediaScreen
+import com.oem.car.feature.navigation.NavigationScreen
+import com.oem.car.feature.phone.PhoneScreen
+import com.oem.car.feature.settings.SettingsScreen
+import com.oem.car.feature.voice.VoiceAssistantOverlay
 
 /**
  * ============================================================================
@@ -75,15 +73,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        // 1. 在主界面创建时，初始化座舱核心数据门面与 Binder 服务连接通道
-//        VehicleRepositoryImpl.initialize(applicationContext)
-//
-//        // 2. 加载声明式 Compose 座舱 HMI 界面
-//        setContent {
-//            CarTheme {
-//                MainCockpitNavigationHost()
-//            }
-//        }
+        // 1. 在主界面创建时，初始化座舱核心数据门面与 Binder 服务连接通道
+        VehicleRepositoryImpl.initialize(applicationContext)
+
+        // 2. 加载声明式 Compose 座舱 HMI 界面
+        setContent {
+            CarTheme {
+                MainCockpitNavigationHost()
+            }
+        }
     }
 
 }
@@ -166,9 +164,7 @@ fun MainCockpitNavigationHost() {
                     )
 
                     Text(
-                        text = "AAOS Cockpit",
-                        color = Color(0xFF00E5FF),
-                        fontSize = 16.sp
+                        text = "AAOS Cockpit", color = Color(0xFF00E5FF), fontSize = 16.sp
                     )
 
                 }
@@ -178,15 +174,15 @@ fun MainCockpitNavigationHost() {
                 // 渲染 11 个 Dock Tab 切换按钮
                 CockpitTab.entries.forEach { tab ->
                     val isSelected = selectedTab == tab
-//                    CarButton(
-//                        text = tab.title,
-//                        onClick = { selectedTab = tab },
-//                        containerColor = if (isSelected) {
-//                            MaterialTheme.colorScheme.primary
-//                        } else {
-//                            Color(0xFF263238)
-//                        }
-//                    )
+                    CarButton(
+                        text = tab.title,
+                        onClick = { selectedTab = tab },
+                        containerColor = if (isSelected) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            Color(0xFF263238)
+                        }
+                    )
                 }
             }
 
@@ -196,25 +192,24 @@ fun MainCockpitNavigationHost() {
                     .fillMaxWidth()
                     .weight(1f)
             ) {
-//                when (selectedTab) {
-//                    CockpitTab.DASHBOARD -> DashboardScreen()
-//                    CockpitTab.CLUSTER -> ClusterScreen()
-//                    CockpitTab.CAR_3D -> com.oem.car.feature.dashboard.Vehicle3dScreen()
-//                    CockpitTab.NAVIGATION -> NavigationScreen()
-//                    CockpitTab.CLIMATE -> ClimateScreen()
-//                    CockpitTab.MEDIA -> MediaScreen()
-//                    CockpitTab.PHONE -> PhoneScreen()
-//                    CockpitTab.CONNECTED -> ConnectedScreen()
-//                    CockpitTab.ENERGY -> EnergyScreen()
-//                    CockpitTab.HEALTH -> HealthScreen()
-//                    CockpitTab.SETTINGS -> SettingsScreen()
-//                }
+                when (selectedTab) {
+                    CockpitTab.DASHBOARD -> DashboardScreen()
+                    CockpitTab.CLUSTER -> ClusterScreen()
+                    CockpitTab.CAR_3D -> com.oem.car.feature.dashboard.Vehicle3dScreen()
+                    CockpitTab.NAVIGATION -> NavigationScreen()
+                    CockpitTab.CLIMATE -> ClimateScreen()
+                    CockpitTab.MEDIA -> MediaScreen()
+                    CockpitTab.PHONE -> PhoneScreen()
+                    CockpitTab.CONNECTED -> ConnectedScreen()
+                    CockpitTab.ENERGY -> EnergyScreen()
+                    CockpitTab.HEALTH -> HealthScreen()
+                    CockpitTab.SETTINGS -> SettingsScreen()
+                }
             }
         }
 
-
         // 3. 全局 Voice PTT 语音助手 Overlay 悬浮层
-        //VoiceAssistantOverlay()
+        VoiceAssistantOverlay()
 
     }
 }

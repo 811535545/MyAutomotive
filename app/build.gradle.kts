@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.oem.car.app"
-        minSdk = 24
+        minSdk = 28
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"
@@ -36,6 +36,7 @@ android {
 
 dependencies {
 
+    //基础配置
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
     implementation(libs.material)
@@ -50,5 +51,36 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
+    // Core modules
+    implementation(project(":core:common"))
+    implementation(project(":core:model"))
+    implementation(project(":core:data"))
+    implementation(project(":core:designsystem"))
+    implementation(project(":core:audio"))
+    implementation(project(":core:vehicle-service"))
+    implementation(project(":core:vehicle"))
+    implementation(project(":core:uxrestrictions"))
+    implementation(project(":core:power"))
+    implementation(project(":core:digitalkey"))
+    implementation(project(":core:telematics"))
+    implementation(project(":core:adas"))
+    implementation(project(":core:account"))
+    implementation(project(":core:navigation"))
+    implementation(project(":core:phone"))
+    implementation(project(":core:energy"))
+    implementation(project(":core:health"))
+    implementation(project(":core:aidl"))
 
+    // Feature modules
+    implementation(project(":feature:dashboard"))
+    implementation(project(":feature:cluster"))
+    implementation(project(":feature:climate"))
+    implementation(project(":feature:media"))
+    implementation(project(":feature:connected"))
+    implementation(project(":feature:navigation"))
+    implementation(project(":feature:phone"))
+    implementation(project(":feature:energy"))
+    implementation(project(":feature:health"))
+    implementation(project(":feature:settings"))
+    implementation(project(":feature:voice"))
 }
