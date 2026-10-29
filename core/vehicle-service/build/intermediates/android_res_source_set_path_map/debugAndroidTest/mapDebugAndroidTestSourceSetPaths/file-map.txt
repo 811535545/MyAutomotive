@@ -1,6 +1,0 @@
-com.oem.car.core.vehicleservice.test.vehicle-service-androidTest-0 E:\gitHub\automotiveProject\core\vehicle-service\build\generated\res\resValues\androidTest\debug
-com.oem.car.core.vehicleservice.test.vehicle-service-updated_navigation_xml-1 E:\gitHub\automotiveProject\core\vehicle-service\build\generated\updated_navigation_xml\debugAndroidTest
-com.oem.car.core.vehicleservice.test.vehicle-service-mergeDebugAndroidTestResources-2 E:\gitHub\automotiveProject\core\vehicle-service\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
-com.oem.car.core.vehicleservice.test.vehicle-service-mergeDebugAndroidTestResources-3 E:\gitHub\automotiveProject\core\vehicle-service\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
-com.oem.car.core.vehicleservice.test.vehicle-service-debugAndroidTest-4 E:\gitHub\automotiveProject\core\vehicle-service\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
-gradleHome-0 D:\.gradle

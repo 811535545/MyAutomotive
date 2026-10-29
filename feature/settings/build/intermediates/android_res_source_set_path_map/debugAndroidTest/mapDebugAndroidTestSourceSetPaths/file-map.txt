@@ -1,6 +1,0 @@
-com.oem.car.feature.settings.test.settings-androidTest-0 E:\gitHub\automotiveProject\feature\settings\build\generated\res\resValues\androidTest\debug
-com.oem.car.feature.settings.test.settings-updated_navigation_xml-1 E:\gitHub\automotiveProject\feature\settings\build\generated\updated_navigation_xml\debugAndroidTest
-com.oem.car.feature.settings.test.settings-mergeDebugAndroidTestResources-2 E:\gitHub\automotiveProject\feature\settings\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
-com.oem.car.feature.settings.test.settings-mergeDebugAndroidTestResources-3 E:\gitHub\automotiveProject\feature\settings\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
-com.oem.car.feature.settings.test.settings-debugAndroidTest-4 E:\gitHub\automotiveProject\feature\settings\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
-gradleHome-0 D:\.gradle

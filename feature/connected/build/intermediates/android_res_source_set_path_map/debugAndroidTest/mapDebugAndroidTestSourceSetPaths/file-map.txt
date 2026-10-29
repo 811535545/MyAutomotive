@@ -1,6 +1,0 @@
-com.oem.car.feature.connected.test.connected-androidTest-0 E:\gitHub\automotiveProject\feature\connected\build\generated\res\resValues\androidTest\debug
-com.oem.car.feature.connected.test.connected-updated_navigation_xml-1 E:\gitHub\automotiveProject\feature\connected\build\generated\updated_navigation_xml\debugAndroidTest
-com.oem.car.feature.connected.test.connected-mergeDebugAndroidTestResources-2 E:\gitHub\automotiveProject\feature\connected\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
-com.oem.car.feature.connected.test.connected-mergeDebugAndroidTestResources-3 E:\gitHub\automotiveProject\feature\connected\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
-com.oem.car.feature.connected.test.connected-debugAndroidTest-4 E:\gitHub\automotiveProject\feature\connected\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
-gradleHome-0 D:\.gradle
