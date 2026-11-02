@@ -90,6 +90,7 @@ class MainActivity : ComponentActivity() {
  * 座舱 11 大核心功能 Tab 枚举定义 (Automotive Cockpit Tab Modules)。
  */
 enum class CockpitTab(val title: String) {
+
     /** 中控大屏：实时仪表数据、总线模拟 Injector 与视频防分心保护卡片 */
     DASHBOARD("中控"),
 
@@ -122,6 +123,7 @@ enum class CockpitTab(val title: String) {
 
     /** 车辆设置：驾驶模式切换 (ECO/COMFORT/SPORT) 与辅助驾驶配置 */
     SETTINGS("设置")
+
 }
 
 /**
@@ -173,7 +175,9 @@ fun MainCockpitNavigationHost() {
 
                 // 渲染 11 个 Dock Tab 切换按钮
                 CockpitTab.entries.forEach { tab ->
+
                     val isSelected = selectedTab == tab
+
                     CarButton(
                         text = tab.title,
                         onClick = { selectedTab = tab },
@@ -183,7 +187,9 @@ fun MainCockpitNavigationHost() {
                             Color(0xFF263238)
                         }
                     )
+
                 }
+
             }
 
             // 2. 中央核心视角渲染区域 (Main View Content Area)

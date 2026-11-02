@@ -18,14 +18,21 @@ import com.oem.car.core.model.VehicleGear
 fun DashboardScreen(
     viewModel: DashboardViewModel = viewModel()
 ) {
+
     val isConnected by viewModel.isConnected.collectAsState()
+
     val speedSignal by viewModel.speedSignal.collectAsState()
+
     val gearSignal by viewModel.gearSignal.collectAsState()
+
     val powerSignal by viewModel.powerSignal.collectAsState()
+
     val uxRestriction by viewModel.uxRestrictionState.collectAsState()
+
     val audioState by viewModel.audioZoneState.collectAsState()
 
     CarTheme {
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
