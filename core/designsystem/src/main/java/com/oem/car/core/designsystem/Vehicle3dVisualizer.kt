@@ -199,14 +199,14 @@ private fun VehicleCanvasViewport(
             .padding(horizontal = 10.dp, vertical = 6.dp), contentAlignment = Alignment.Center
     ) {
 
-        // --- 核心画布 (完全居中释放，不再被中间的黑块盖住) ---
+        // --- 核心画布 (车模垂直位置调高至 38% 处，避免遮挡底部的 telemetry 信息栏) ---
         Canvas(
             modifier = Modifier
                 .testTag("vehicle_3d_canvas")
                 .fillMaxSize()
         ) {
             val cx = size.width / 2f
-            val cy = size.height / 2f
+            val cy = size.height * 0.38f
 
             if (state.isDriving) drawMotionWindLines(cx, cy, motionOffset)
             drawVehicleBody(cx, cy, state.isDriving)
@@ -215,73 +215,65 @@ private fun VehicleCanvasViewport(
             drawDoors(cx, cy, state)
         }
 
-        // --- 顶部 HUD 通栏：左状态、右车速胎压，左右分开彻底解决重叠 ---
-        Row(
+        // --- 1. 左上角：标题 + 车门锁状态 ---
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.TopCenter),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Top
+                .align(Alignment.TopStart)
+                .testTag("vehicle_3d_top_panel")
+        ) {
+            Text(
+                text = titleText,
+                color = Color(0xFF80D8FF),
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.testTag("vehicle_3d_title")
+            )
+
+            Text(
+                text = when {
+                    state.isAnyDoorOpen -> "⚠️ 车门开启"
+                    state.isDoorLocked -> "🔒 车门全锁"
+                    else -> "🔓 车门解锁"
+                },
+                color = when {
+                    state.isAnyDoorOpen -> Color(0xFFFF9100)
+                    state.isDoorLocked -> Color(0xFF00E676)
+                    else -> Color(0xFFFFB74D)
+                },
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.testTag("vehicle_3d_lock_status")
+            )
+        }
+
+        // --- 2. 正下方：车速档位与胎压 (位于 3D 车模正下方，预留充裕的安全上下间距) ---
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 2.dp)
+                .testTag("vehicle_3d_bottom_panel")
+                .background(Color(0xCC0F131A), shape = RoundedCornerShape(6.dp))
+                .padding(horizontal = 8.dp, vertical = 2.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
+            Text(
+                text = "胎压: ${String.format(Locale.US, "%.1f", state.tirePressure)} bar (正常)",
+                color = Color(0xFFB0BEC5),
+                fontSize = 9.5.sp,
+                modifier = Modifier.testTag("vehicle_3d_tire_pressure")
+            )
 
-            // 左上角：标题 + 车门锁状态
-            Column(modifier = Modifier.testTag("vehicle_3d_top_panel")) {
+            val displaySpeed = gearText ?: if (state.speed > 0) "${state.speed.toInt()} km/h" else "车辆静止 P档"
 
-                Text(
-                    text = titleText,
-                    color = Color(0xFF80D8FF),
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.testTag("vehicle_3d_title")
-                )
+            Text(
+                text = displaySpeed,
+                color = Color(0xFF00E5FF),
+                fontSize = 10.5.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.testTag("vehicle_3d_speed_gear")
+            )
 
-
-                Text(
-                    text = when {
-                        state.isAnyDoorOpen -> "⚠️ 车门开启"
-                        state.isDoorLocked -> "🔒 车门全锁"
-                        else -> "🔓 车门解锁"
-                    },
-                    color = when {
-                        state.isAnyDoorOpen -> Color(0xFFFF9100)
-                        state.isDoorLocked -> Color(0xFF00E676)
-                        else -> Color(0xFFFFB74D)
-                    },
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.testTag("vehicle_3d_lock_status")
-                )
-            }
-
-            // 右上角：车速档位 + 胎压 (从居中位置挪到右上角)
-            Column(
-                modifier = Modifier
-                    .testTag("vehicle_3d_bottom_panel")
-                    .background(Color(0x55000000), shape = RoundedCornerShape(4.dp))
-                    .padding(horizontal = 6.dp, vertical = 2.dp),
-                horizontalAlignment = Alignment.End
-            ) {
-
-                val displaySpeed = gearText
-                    ?: if (state.speed > 0) "${state.speed.toInt()} km/h" else "车辆静止 P档"
-
-                Text(
-                    text = displaySpeed,
-                    color = Color(0xFF00E5FF),
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.testTag("vehicle_3d_speed_gear")
-                )
-
-                Text(
-                    text = "胎压 ${String.format(Locale.US, "%.1f", state.tirePressure)} bar",
-                    color = Color(0xFFB0BEC5),
-                    fontSize = 9.sp,
-                    modifier = Modifier.testTag("vehicle_3d_tire_pressure")
-                )
-
-            }
         }
     }
 }
