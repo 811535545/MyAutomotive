@@ -101,3 +101,20 @@ fun SpeedGaugeComponent(
         }
     }
 }
+
+/**
+ * 车规级动态状态栏安全内边距 (优先动态获取，固定高度兜底)
+ *
+ * 逻辑：
+ * 1. 优先读取系统动态 WindowInsets.statusBars 的顶部落差高度；
+ * 2. 如果动态高度 > 0 (标准手机/平板/带状态栏车机)，则使用动态高度；
+ * 3. 如果动态高度为 0 (部分纯全屏车机、无状态栏定制系统或特殊IVI车机)，则自动使用 [fallback] (默认 24.dp) 兜底，
+ *    确保顶部绝不会紧贴屏幕边缘或发生误触。
+ */
+@Composable
+fun Modifier.safeStatusBarPadding(fallback: androidx.compose.ui.unit.Dp = 24.dp): Modifier {
+    val dynamicTop = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+    val topPadding = if (dynamicTop > 0.dp) dynamicTop else fallback
+    return this.padding(top = topPadding)
+}
+

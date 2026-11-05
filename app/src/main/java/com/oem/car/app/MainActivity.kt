@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -45,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import com.oem.car.core.data.VehicleRepositoryImpl
 import com.oem.car.core.designsystem.CarButton
 import com.oem.car.core.designsystem.CarTheme
+import com.oem.car.core.designsystem.safeStatusBarPadding
 import com.oem.car.feature.climate.ClimateScreen
 import com.oem.car.feature.cluster.ClusterScreen
 import com.oem.car.feature.connected.ConnectedScreen
@@ -72,6 +74,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 0. 开启全面屏沉浸式与状态栏 Edge-to-Edge 适配
+        enableEdgeToEdge()
 
         // 1. 在主界面创建时，初始化座舱核心数据门面与 Binder 服务连接通道
         VehicleRepositoryImpl.initialize(applicationContext)
@@ -145,8 +150,9 @@ fun MainCockpitNavigationHost() {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(64.dp)
                     .background(Color(0xFF141820))
+                    .safeStatusBarPadding(fallback = 24.dp)
+                    .height(64.dp)
                     .horizontalScroll(rememberScrollState())
                     .padding(horizontal = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
