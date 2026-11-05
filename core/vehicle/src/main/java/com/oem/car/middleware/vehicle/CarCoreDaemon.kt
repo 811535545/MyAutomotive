@@ -5,11 +5,17 @@ import android.os.Process
 import android.os.RemoteCallbackList
 import android.os.RemoteException
 import android.util.Log
+import com.oem.car.core.model.DbcDecodedMessage
 import com.oem.car.core.model.DrivingSafetyPolicy
+import com.oem.car.core.model.SocketCanChannelAdapter
 import com.oem.car.middleware.IVehicleCoreManager
 import com.oem.car.middleware.IVehicleEventListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 /**
  * ============================================================================
@@ -124,6 +130,46 @@ class CarCoreDaemon : IVehicleCoreManager.Stub() {
 
     /** PTT 时间戳的只读视图。目前没有消费者。 */
     val voiceTriggerEvent = _voiceTriggerEvent.asStateFlow()
+
+    private val daemonScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    val socketCanAdapter = SocketCanChannelAdapter("vcan0", daemonScope)
+
+    init {
+        daemonScope.launch {
+            socketCanAdapter.decodedMessageStream.collect { msg ->
+                when (msg) {
+                    is DbcDecodedMessage.VehicleDynamic -> {
+                        if (msg.isCrcValid) {
+                            _speed.value = msg.speedKmh
+                            _gear.value = when (msg.gear) {
+                                com.oem.car.core.model.VehicleGear.PARK -> 1
+                                com.oem.car.core.model.VehicleGear.REVERSE -> 2
+                                com.oem.car.core.model.VehicleGear.NEUTRAL -> 4
+                                com.oem.car.core.model.VehicleGear.DRIVE -> 8
+                            }
+                            _powerState.value = when (msg.powerState) {
+                                com.oem.car.core.model.PowerState.RUNNING -> 0
+                                com.oem.car.core.model.PowerState.STR_SLEEP -> 1
+                                com.oem.car.core.model.PowerState.GARAGE_MODE -> 2
+                                com.oem.car.core.model.PowerState.SHUTDOWN_PREPARE -> 3
+                            }
+                            checkSafetyPolicy()
+                            dispatch { listener ->
+                                listener.onSpeedChanged(_speed.value)
+                                listener.onGearChanged(_gear.value)
+                                listener.onPowerStateChanged(_powerState.value)
+                            }
+                        } else {
+                            Log.w(TAG, "SocketCAN DBC frame CRC8 checksum error; dropping frame.")
+                        }
+                    }
+                    else -> {
+                        Log.i(TAG, "Received CAN DBC message ID=0x${msg.canId.toString(16)}: $msg")
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * AIDL 方法：客户端注册事件监听。
@@ -282,6 +328,13 @@ class CarCoreDaemon : IVehicleCoreManager.Stub() {
     override fun triggerPttVoice() {
         Log.d(TAG, "triggerPttVoice callerPid=${Binder.getCallingPid()}")
         _voiceTriggerEvent.value = System.currentTimeMillis()
+    }
+
+    override fun injectSocketCanRawFrame(raw16ByteBuffer: ByteArray?) {
+        if (raw16ByteBuffer != null && raw16ByteBuffer.size >= 16) {
+            Log.d(TAG, "injectSocketCanRawFrame bytes=${raw16ByteBuffer.size} callerPid=${Binder.getCallingPid()}")
+            socketCanAdapter.injectRawBuffer(raw16ByteBuffer)
+        }
     }
 
     /**

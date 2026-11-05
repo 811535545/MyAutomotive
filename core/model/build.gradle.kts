@@ -17,6 +17,8 @@ kotlin {
     }
 }
 dependencies {
+    implementation(project(":core:common"))
     implementation(libs.kotlinx.coroutines.core)
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
 }

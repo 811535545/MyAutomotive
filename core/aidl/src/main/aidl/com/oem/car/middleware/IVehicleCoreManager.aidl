@@ -73,4 +73,14 @@ interface IVehicleCoreManager {
          */
     void triggerPttVoice();
 
+    /**
+     * 注入 Linux SocketCAN 16-Byte 二进制 can_frame 报文字节块
+     *
+     * 【底层总线接入入口】直接向车载 Daemon 注入 SocketCAN 原生 C 结构体二进制帧。
+     * 服务端会自动解析 SocketCAN 标志位、解包 DBC 信号矩阵并同步分发。
+     *
+     * @param raw16ByteBuffer 符合 Linux SocketCAN <linux/can.h> 的 16 字节 can_frame 二进制数据
+     */
+    void injectSocketCanRawFrame(in byte[] raw16ByteBuffer);
+
 }

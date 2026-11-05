@@ -27,4 +27,5 @@ dependencies {
     implementation(project(":core:power"))
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
+    testImplementation(libs.junit)
 }
