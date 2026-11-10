@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
  * 提供了可解耦、可测试的依赖注入容器结构，替代硬编码单例。
  */
 object VehicleServiceContainer {
+
     private val scope = CoroutineScope(Dispatchers.Default)
 
     var propertyProviderOverride: VehiclePropertyProvider? = null
@@ -32,14 +33,25 @@ object VehicleServiceContainer {
     }
 
     val uxEngine: CarUxRestrictionsEngine by lazy { CarUxRestrictionsEngine() }
+
     val powerManager: CarPowerLifecycleManager by lazy { CarPowerLifecycleManager() }
+
     val audioDelegate: CarAudioManagerDelegate by lazy { CarAudioManagerDelegate() }
+
     val digitalKeyManager: DigitalKeyManager by lazy { DigitalKeyManager() }
+
     val telematicsManager: TelematicsManager by lazy { TelematicsManager(scope) }
+
     val adasManager: AdasManager by lazy { AdasManager() }
+
     val accountManager: AccountManager by lazy { AccountManager() }
+
     val navigationManager: NavigationManager by lazy { NavigationManager() }
+
     val phoneManager: PhoneManager by lazy { PhoneManager(scope) }
+
     val energyManager: EnergyManager by lazy { EnergyManager(scope) }
+
     val healthManager: VehicleHealthManager by lazy { VehicleHealthManager(scope) }
+
 }

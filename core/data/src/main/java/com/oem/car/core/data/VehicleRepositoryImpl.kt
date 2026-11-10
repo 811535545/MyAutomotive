@@ -156,9 +156,11 @@ object VehicleRepositoryImpl : VehicleRepository {
      *    - 监听电源状态：实时驱动 `powerManager` 处理 STR 睡眠或复位。
      */
     override fun initialize(context: Context) {
+
         if (!initialized.compareAndSet(false, true)) return
 
         val provider = VehicleServiceContainer.getPropertyProvider(context.applicationContext)
+
         propertyProvider = provider
 
         // 监听底层服务连接通道状态

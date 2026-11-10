@@ -161,13 +161,17 @@ class VehicleServiceConnectionManager(
      * 发起 bindService 绑定请求，跨进程拉起 :vehicle 车辆服务进程。
      */
     fun connect() {
+
         if (isBinding || _isConnected.value || vehicleCoreManager != null) return
+
         isBinding = true
+
         bindStartedAtMs = SystemClock.uptimeMillis()
 
         val intent = Intent().setComponent(
             ComponentName(appContext.packageName, VEHICLE_SERVICE_CLASS)
         )
+
         CarLogger.i(
             TAG,
             "bindService requested component=${intent.component?.flattenToShortString()} " +
@@ -179,6 +183,7 @@ class VehicleServiceConnectionManager(
             CarLogger.e(TAG, "bindService returned false")
             scheduleReconnect()
         }
+
     }
 
     /** AIDL 远程方法：注入模拟车速 */
@@ -306,8 +311,11 @@ class VehicleServiceConnectionManager(
     }
 
     companion object {
+
         private const val TAG = "VehicleServiceConn"
+
         private const val AIDL_DESCRIPTOR = "com.oem.car.middleware.IVehicleCoreManager"
+
         private const val VEHICLE_SERVICE_CLASS = "com.oem.car.middleware.vehicle.VehicleCoreService"
 
         /** 指数退避算法初始延时：1000 毫秒 */
@@ -315,5 +323,7 @@ class VehicleServiceConnectionManager(
 
         /** 指数退避算法最大延时：10000 毫秒 */
         private const val MAX_RECONNECT_DELAY_MS = 10000L
+
     }
+
 }
