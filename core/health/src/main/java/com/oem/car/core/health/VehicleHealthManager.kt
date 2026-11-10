@@ -18,13 +18,27 @@ import kotlinx.coroutines.launch
  * ============================================================================
  *
  * 【核心职责】
- * 模拟全车系统诊断扫描（如制动、气囊、ESP、胎压）、UDS 诊断故障码 (DTC) 的扫描检索与清除。
+ * 模拟全车系统诊断扫描（如制动、气囊、ESP、胎压）、UDS 诊断故障码 (DTC) 的扫描检索与清除，
+ * 并集成 [RuntimeSystemHealthMonitor] 进行实时的车规级主线程 ANR 与性能卡顿监控。
  */
 class VehicleHealthManager(private val scope: CoroutineScope) {
     private val _state = MutableStateFlow(VehicleHealthState())
     val state: StateFlow<VehicleHealthState> = _state.asStateFlow()
 
     private var scanJob: Job? = null
+
+    /** 运行时 ANR 与性能守望者 */
+    private val anrMonitor = RuntimeSystemHealthMonitor(scope) { warningMessage ->
+        _state.update { current ->
+            val newDtcs = current.dtcs.toMutableList().apply {
+                add(DtcCode("ANR01", warningMessage, HealthSeverity.FAULT))
+            }
+            current.copy(
+                dtcs = newDtcs,
+                lastScanResult = "检测到系统性能警告 (ANR Watchdog)"
+            )
+        }
+    }.also { it.start() }
 
     /** 启动车辆健康诊断扫描（模拟 1.5 秒后返回故障码） */
     fun scan() {
