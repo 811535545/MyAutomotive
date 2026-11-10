@@ -140,18 +140,17 @@ fun Vehicle3dVisualizerContent(
         modifier = modifier
             .testTag("vehicle_3d_container")
             .fillMaxWidth()
-            .fillMaxHeight(),
+            .wrapContentHeight(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // 1. 车模视口 (强制占满剩余高度，最小高度设为 160.dp，确保车模有充足的纵向展开空间)
+        // 1. 车模视口 (固定高度 230.dp，配合外层滚动，绝不使用 weight 导致黑屏或截断)
         VehicleCanvasViewport(
             state = state,
             titleText = titleText,
             gearText = gearText,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
-                .heightIn(min = 160.dp)
+                .height(230.dp)
         )
 
         // 2. 底部控制台
@@ -201,7 +200,7 @@ private fun VehicleCanvasViewport(
 
                 Text(
                     text = when {
-                        state.isAnyDoorOpen -> "⚠️ 车门开启"
+                        state.isAnyDoorOpen -> "⚠️ 车门开启告警"
                         state.isDoorLocked -> "🔒 车门全锁"
                         else -> "🔓 车门解锁"
                     },
@@ -216,15 +215,31 @@ private fun VehicleCanvasViewport(
                 )
             }
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-            // 2. 中间：纯净的 3D 车模 Canvas 画布 (cy 居中 0.5f，最小高度 100.dp，绝不挤压)
+            // 1.1 新增：精确显示 4 个车门（左前、右前、左后、右后）开启/关闭状态的 4 个独立 Text 指示器
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFF141820), shape = RoundedCornerShape(6.dp))
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                DoorStatusText(label = "左前", isOpen = state.isFrontLeftDoorOpen)
+                DoorStatusText(label = "右前", isOpen = state.isFrontRightDoorOpen)
+                DoorStatusText(label = "左后", isOpen = state.isRearLeftDoorOpen)
+                DoorStatusText(label = "右后", isOpen = state.isRearRightDoorOpen)
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // 2. 中间：纯净的 3D 车模 Canvas 画布 (固定高度 105.dp，绝不使用 weight 导致黑屏)
             Canvas(
                 modifier = Modifier
                     .testTag("vehicle_3d_canvas")
                     .fillMaxWidth()
-                    .weight(1f)
-                    .heightIn(min = 100.dp)
+                    .height(105.dp)
             ) {
                 val cx = size.width / 2f
                 val cy = size.height / 2f
@@ -596,3 +611,16 @@ private fun DrawScope.drawDoors(cx: Float, cy: Float, state: Vehicle3dState) {
         )
     }
 }
+
+@Composable
+private fun DoorStatusText(label: String, isOpen: Boolean) {
+    val color = if (isOpen) Color(0xFFFF9100) else Color(0xFF00E676)
+    val statusText = if (isOpen) "$label: 开启" else "$label: 关闭"
+    Text(
+        text = statusText,
+        color = color,
+        fontSize = 9.5.sp,
+        fontWeight = if (isOpen) FontWeight.Bold else FontWeight.Normal
+    )
+}
+
