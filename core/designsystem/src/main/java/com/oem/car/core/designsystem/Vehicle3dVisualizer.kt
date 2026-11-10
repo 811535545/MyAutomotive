@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import java.util.Locale
 
 /**
+ * 中控
  * 3D 车身数字孪生状态模型 (Vehicle 3D Digital Twin State)。
  * 支持前后左右 4 大灯、4 车门开关状态控制。
  */
@@ -373,7 +374,8 @@ private fun VehicleControlCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(8.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             // 顶部快捷控制条
             Row(
@@ -382,7 +384,7 @@ private fun VehicleControlCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "🎛️ 车身控制台",
+                    text = "🎛️ 车身控制台 (8路总线开关)",
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF00E5FF)
@@ -404,9 +406,7 @@ private fun VehicleControlCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
-
-            // 单项 Chip 控制条
+            // 第 1 行：4路灯光控制开关 (前左灯、前右灯、后左灯、后右灯)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -424,6 +424,25 @@ private fun VehicleControlCard(
                     modifier = Modifier.weight(1f)
                 )
                 ControlChip(
+                    label = "后左灯",
+                    isOn = state.isRearLeftLightOn,
+                    onToggle = { onStateUpdated(state.copy(isRearLeftLightOn = !state.isRearLeftLightOn)) },
+                    modifier = Modifier.weight(1f)
+                )
+                ControlChip(
+                    label = "后右灯",
+                    isOn = state.isRearRightLightOn,
+                    onToggle = { onStateUpdated(state.copy(isRearRightLightOn = !state.isRearRightLightOn)) },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            // 第 2 行：4路车门控制开关 (左前门、右前门、左后门、右后门)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                ControlChip(
                     label = "左前门",
                     isOn = state.isFrontLeftDoorOpen,
                     activeColor = Color(0xFFFF9100),
@@ -435,6 +454,20 @@ private fun VehicleControlCard(
                     isOn = state.isFrontRightDoorOpen,
                     activeColor = Color(0xFFFF9100),
                     onToggle = { onStateUpdated(state.copy(isFrontRightDoorOpen = !state.isFrontRightDoorOpen)) },
+                    modifier = Modifier.weight(1f)
+                )
+                ControlChip(
+                    label = "左后门",
+                    isOn = state.isRearLeftDoorOpen,
+                    activeColor = Color(0xFFFF9100),
+                    onToggle = { onStateUpdated(state.copy(isRearLeftDoorOpen = !state.isRearLeftDoorOpen)) },
+                    modifier = Modifier.weight(1f)
+                )
+                ControlChip(
+                    label = "右后门",
+                    isOn = state.isRearRightDoorOpen,
+                    activeColor = Color(0xFFFF9100),
+                    onToggle = { onStateUpdated(state.copy(isRearRightDoorOpen = !state.isRearRightDoorOpen)) },
                     modifier = Modifier.weight(1f)
                 )
             }
