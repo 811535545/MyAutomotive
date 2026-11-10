@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.util.Locale
@@ -137,46 +136,29 @@ fun Vehicle3dVisualizerContent(
     showControls: Boolean = true,
     onStateUpdated: (Vehicle3dState) -> Unit = {}
 ) {
-    BoxWithConstraints(modifier = modifier) {
-        // 判断父容器是否有明确的高度限制
-        val hasMaxHeight = maxHeight != Dp.Unspecified && maxHeight < Dp.Infinity
-
-        Column(
+    Column(
+        modifier = modifier
+            .testTag("vehicle_3d_container")
+            .fillMaxWidth()
+            .fillMaxHeight(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        // 1. 车模视口 (强制占满剩余高度，最小高度设为 160.dp，确保车模有充足的纵向展开空间)
+        VehicleCanvasViewport(
+            state = state,
+            titleText = titleText,
+            gearText = gearText,
             modifier = Modifier
-                .testTag("vehicle_3d_container")
                 .fillMaxWidth()
-                .then(
-                    // 关键点：有约束就占满卡片，无约束就 wrap_content 自适应内容
-                    if (hasMaxHeight) Modifier.fillMaxHeight() else Modifier.wrapContentHeight()
-                )
-        ) {
-            // 1. 车模视口 (带自适应高度)
-            VehicleCanvasViewport(
-                state = state,
-                titleText = titleText,
-                gearText = gearText,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .then(
-                        if (hasMaxHeight) {
-                            // 在固定高度卡片里：动态吸取所有剩余高度，不再写死 110dp
-                            Modifier.weight(1f)
-                        } else {
-                            // 在滚动列表或无限制时：按车模比例 wrap 自适应高度
-                            Modifier
-                                .aspectRatio(2.2f)
-                                .heightIn(min = 120.dp, max = 200.dp)
-                        }
-                    )
-            )
+                .weight(1f)
+                .heightIn(min = 160.dp)
+        )
 
-            // 2. 底部控制台 (按自身内容自适应 wrap_content)
-            if (showControls) {
-                Spacer(modifier = Modifier.height(6.dp))
-                VehicleControlCard(
-                    state = state, onStateUpdated = onStateUpdated
-                )
-            }
+        // 2. 底部控制台
+        if (showControls) {
+            VehicleControlCard(
+                state = state, onStateUpdated = onStateUpdated
+            )
         }
     }
 }
@@ -189,91 +171,100 @@ fun Vehicle3dVisualizerContent(
 private fun VehicleCanvasViewport(
     state: Vehicle3dState, titleText: String, gearText: String?, modifier: Modifier = Modifier
 ) {
-
     val motionOffset by rememberSpeedMotionOffset(speed = state.speed)
 
     Box(
         modifier = modifier
             .testTag("vehicle_3d_root")
             .background(Color(0xFF0F131A), shape = RoundedCornerShape(12.dp))
-            .padding(horizontal = 10.dp, vertical = 6.dp), contentAlignment = Alignment.Center
+            .padding(12.dp)
     ) {
-
-        // --- 核心画布 (车模垂直位置调高至 38% 处，避免遮挡底部的 telemetry 信息栏) ---
-        Canvas(
-            modifier = Modifier
-                .testTag("vehicle_3d_canvas")
-                .fillMaxSize()
-        ) {
-            val cx = size.width / 2f
-            val cy = size.height * 0.38f
-
-            if (state.isDriving) drawMotionWindLines(cx, cy, motionOffset)
-            drawVehicleBody(cx, cy, state.isDriving)
-            drawHeadlights(cx, cy, state.isFrontLeftLightOn, state.isFrontRightLightOn)
-            drawTailLights(cx, cy, state.isRearLeftLightOn, state.isRearRightLightOn)
-            drawDoors(cx, cy, state)
-        }
-
-        // --- 1. 左上角：标题 + 车门锁状态 ---
         Column(
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .testTag("vehicle_3d_top_panel")
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = titleText,
-                color = Color(0xFF80D8FF),
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.testTag("vehicle_3d_title")
-            )
+            // 1. 顶部：标题 + 车门锁状态 (Row 左右分布，绝不覆盖车模)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("vehicle_3d_top_panel"),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = titleText,
+                    color = Color(0xFF80D8FF),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.testTag("vehicle_3d_title")
+                )
 
-            Text(
-                text = when {
-                    state.isAnyDoorOpen -> "⚠️ 车门开启"
-                    state.isDoorLocked -> "🔒 车门全锁"
-                    else -> "🔓 车门解锁"
-                },
-                color = when {
-                    state.isAnyDoorOpen -> Color(0xFFFF9100)
-                    state.isDoorLocked -> Color(0xFF00E676)
-                    else -> Color(0xFFFFB74D)
-                },
-                fontSize = 10.sp,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.testTag("vehicle_3d_lock_status")
-            )
-        }
+                Text(
+                    text = when {
+                        state.isAnyDoorOpen -> "⚠️ 车门开启"
+                        state.isDoorLocked -> "🔒 车门全锁"
+                        else -> "🔓 车门解锁"
+                    },
+                    color = when {
+                        state.isAnyDoorOpen -> Color(0xFFFF9100)
+                        state.isDoorLocked -> Color(0xFF00E676)
+                        else -> Color(0xFFFFB74D)
+                    },
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.testTag("vehicle_3d_lock_status")
+                )
+            }
 
-        // --- 2. 正下方：车速档位与胎压 (位于 3D 车模正下方，预留充裕的安全上下间距) ---
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 2.dp)
-                .testTag("vehicle_3d_bottom_panel")
-                .background(Color(0xCC0F131A), shape = RoundedCornerShape(6.dp))
-                .padding(horizontal = 8.dp, vertical = 2.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+            Spacer(modifier = Modifier.height(6.dp))
 
-            Text(
-                text = "胎压: ${String.format(Locale.US, "%.1f", state.tirePressure)} bar (正常)",
-                color = Color(0xFFB0BEC5),
-                fontSize = 9.5.sp,
-                modifier = Modifier.testTag("vehicle_3d_tire_pressure")
-            )
+            // 2. 中间：纯净的 3D 车模 Canvas 画布 (cy 居中 0.5f，最小高度 100.dp，绝不挤压)
+            Canvas(
+                modifier = Modifier
+                    .testTag("vehicle_3d_canvas")
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .heightIn(min = 100.dp)
+            ) {
+                val cx = size.width / 2f
+                val cy = size.height / 2f
 
-            val displaySpeed = gearText ?: if (state.speed > 0) "${state.speed.toInt()} km/h" else "车辆静止 P档"
+                if (state.isDriving) drawMotionWindLines(cx, cy, motionOffset)
+                drawVehicleBody(cx, cy, state.isDriving)
+                drawHeadlights(cx, cy, state.isFrontLeftLightOn, state.isFrontRightLightOn)
+                drawTailLights(cx, cy, state.isRearLeftLightOn, state.isRearRightLightOn)
+                drawDoors(cx, cy, state)
+            }
 
-            Text(
-                text = displaySpeed,
-                color = Color(0xFF00E5FF),
-                fontSize = 10.5.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.testTag("vehicle_3d_speed_gear")
-            )
+            Spacer(modifier = Modifier.height(6.dp))
 
+            // 3. 底部：车速档位与胎压信息条 (独占一行，带独立背景，与车模彻底隔离、永不覆盖)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("vehicle_3d_bottom_panel")
+                    .background(Color(0xFF141820), shape = RoundedCornerShape(8.dp))
+                    .padding(horizontal = 10.dp, vertical = 6.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "🛞 胎压: ${String.format(Locale.US, "%.1f", state.tirePressure)} bar (正常)",
+                    color = Color(0xFFB0BEC5),
+                    fontSize = 11.sp,
+                    modifier = Modifier.testTag("vehicle_3d_tire_pressure")
+                )
+
+                val displaySpeed = gearText ?: if (state.speed > 0) "${state.speed.toInt()} km/h" else "车辆静止 P档"
+
+                Text(
+                    text = "🚀 $displaySpeed",
+                    color = Color(0xFF00E5FF),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.testTag("vehicle_3d_speed_gear")
+                )
+            }
         }
     }
 }
@@ -500,13 +491,13 @@ private fun rememberSpeedMotionOffset(speed: Float): State<Float> {
 
 private fun DrawScope.drawMotionWindLines(cx: Float, cy: Float, offset: Float) {
     for (i in 0..4) {
-        val startX = (cx - 200f + (offset + i * 80) % 400f)
-        val y = cy - 60f + i * 30f
+        val startX = (cx - 150f + (offset + i * 60) % 300f)
+        val y = cy - 35f + i * 18f
         drawLine(
             color = Color(0x3300E5FF),
             start = Offset(startX, y),
-            end = Offset(startX + 40f, y),
-            strokeWidth = 3f
+            end = Offset(startX + 30f, y),
+            strokeWidth = 2.5f
         )
     }
 }
@@ -515,26 +506,26 @@ private fun DrawScope.drawVehicleBody(cx: Float, cy: Float, isDriving: Boolean) 
     // 阴影
     drawRoundRect(
         color = Color(0x66000000),
-        topLeft = Offset(cx - 130f, cy - 45f),
-        size = Size(260f, 90f),
-        cornerRadius = CornerRadius(20f, 20f)
+        topLeft = Offset(cx - 95f, cy - 28f),
+        size = Size(190f, 56f),
+        cornerRadius = CornerRadius(14f, 14f)
     )
     // 车身外廓
     val bodyColor = if (isDriving) Color(0xFF00E5FF) else Color(0xFF37474F)
     drawRoundRect(
         color = bodyColor,
-        topLeft = Offset(cx - 120f, cy - 40f),
-        size = Size(240f, 80f),
-        cornerRadius = CornerRadius(24f, 24f),
-        style = Stroke(width = 4f)
+        topLeft = Offset(cx - 90f, cy - 24f),
+        size = Size(180f, 48f),
+        cornerRadius = CornerRadius(16f, 16f),
+        style = Stroke(width = 3f)
     )
     // 车顶棚
     drawRoundRect(
         color = bodyColor.copy(alpha = 0.6f),
-        topLeft = Offset(cx - 50f, cy - 30f),
-        size = Size(100f, 60f),
-        cornerRadius = CornerRadius(12f, 12f),
-        style = Stroke(width = 2f)
+        topLeft = Offset(cx - 35f, cy - 16f),
+        size = Size(70f, 32f),
+        cornerRadius = CornerRadius(8f, 8f),
+        style = Stroke(width = 1.5f)
     )
 }
 
@@ -542,42 +533,42 @@ private fun DrawScope.drawHeadlights(cx: Float, cy: Float, leftOn: Boolean, righ
     // 前左大灯 + 光束
     if (leftOn) {
         val path = Path().apply {
-            moveTo(cx + 115f, cy - 25f)
-            lineTo(cx + 180f, cy - 50f)
-            lineTo(cx + 180f, cy - 10f)
+            moveTo(cx + 88f, cy - 15f)
+            lineTo(cx + 130f, cy - 30f)
+            lineTo(cx + 130f, cy - 5f)
             close()
         }
         drawPath(path = path, color = Color(0x3300E5FF))
     }
     drawCircle(
         color = if (leftOn) Color(0xFF00E5FF) else Color(0xFF455A64),
-        radius = 8f,
-        center = Offset(cx + 115f, cy - 25f)
+        radius = 5f,
+        center = Offset(cx + 88f, cy - 15f)
     )
 
     // 前右大灯 + 光束
     if (rightOn) {
         val path = Path().apply {
-            moveTo(cx + 115f, cy + 25f)
-            lineTo(cx + 180f, cy + 10f)
-            lineTo(cx + 180f, cy + 50f)
+            moveTo(cx + 88f, cy + 15f)
+            lineTo(cx + 130f, cy + 5f)
+            lineTo(cx + 130f, cy + 30f)
             close()
         }
         drawPath(path = path, color = Color(0x3300E5FF))
     }
     drawCircle(
         color = if (rightOn) Color(0xFF00E5FF) else Color(0xFF455A64),
-        radius = 8f,
-        center = Offset(cx + 115f, cy + 25f)
+        radius = 5f,
+        center = Offset(cx + 88f, cy + 15f)
     )
 }
 
 private fun DrawScope.drawTailLights(cx: Float, cy: Float, leftOn: Boolean, rightOn: Boolean) {
-    listOf(cy - 25f to leftOn, cy + 25f to rightOn).forEach { (y, isOn) ->
+    listOf(cy - 15f to leftOn, cy + 15f to rightOn).forEach { (y, isOn) ->
         val lightColor = if (isOn) Color(0xFFFF5252) else Color(0xFF455A64)
-        drawCircle(color = lightColor, radius = 7f, center = Offset(cx - 115f, y))
+        drawCircle(color = lightColor, radius = 5f, center = Offset(cx - 88f, y))
         if (isOn) {
-            drawCircle(color = Color(0x66FF5252), radius = 12f, center = Offset(cx - 115f, y))
+            drawCircle(color = Color(0x66FF5252), radius = 9f, center = Offset(cx - 88f, y))
         }
     }
 }
@@ -586,22 +577,22 @@ private fun DrawScope.drawDoors(cx: Float, cy: Float, state: Vehicle3dState) {
     val doorColor = Color(0xFFFF9100)
     if (state.isFrontLeftDoorOpen) {
         drawLine(
-            doorColor, Offset(cx + 20f, cy - 40f), Offset(cx + 35f, cy - 62f), strokeWidth = 5f
+            doorColor, Offset(cx + 15f, cy - 24f), Offset(cx + 25f, cy - 38f), strokeWidth = 3.5f
         )
     }
     if (state.isFrontRightDoorOpen) {
         drawLine(
-            doorColor, Offset(cx + 20f, cy + 40f), Offset(cx + 35f, cy + 62f), strokeWidth = 5f
+            doorColor, Offset(cx + 15f, cy + 24f), Offset(cx + 25f, cy + 38f), strokeWidth = 3.5f
         )
     }
     if (state.isRearLeftDoorOpen) {
         drawLine(
-            doorColor, Offset(cx - 40f, cy - 40f), Offset(cx - 25f, cy - 62f), strokeWidth = 5f
+            doorColor, Offset(cx - 30f, cy - 24f), Offset(cx - 20f, cy - 38f), strokeWidth = 3.5f
         )
     }
     if (state.isRearRightDoorOpen) {
         drawLine(
-            doorColor, Offset(cx - 40f, cy + 40f), Offset(cx - 25f, cy + 62f), strokeWidth = 5f
+            doorColor, Offset(cx - 30f, cy + 24f), Offset(cx - 20f, cy + 38f), strokeWidth = 3.5f
         )
     }
 }

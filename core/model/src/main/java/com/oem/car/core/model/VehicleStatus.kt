@@ -35,12 +35,23 @@ data class AudioZoneState(
     val audioFocusDuck: Boolean = false
 )
 
+enum class WindMode(val display: String) {
+    FACE("吹面"),
+    BIFACE("双向"),
+    FOOT("吹脚"),
+    DEFROST("除霜")
+}
+
 data class ClimateState(
     val driverTemp: Float = 22.0f,
     val passengerTemp: Float = 22.0f,
     val fanSpeed: Int = 3,
     val isAcOn: Boolean = true,
-    val isAutoMode: Boolean = true
+    val isAutoMode: Boolean = true,
+    val driverSeatHeating: Int = 0, // 0: 关闭, 1: 一档, 2: 二档, 3: 三档
+    val passengerSeatHeating: Int = 0, // 0: 关闭, 1: 一档, 2: 二档, 3: 三档
+    val windMode: WindMode = WindMode.FACE,
+    val isAirPurifierOn: Boolean = true
 )
 
 enum class DriveMode(val display: String) {
