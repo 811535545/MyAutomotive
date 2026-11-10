@@ -145,6 +145,7 @@ fun MainCockpitNavigationHost() {
     var selectedTab by remember { mutableStateOf(CockpitTab.DASHBOARD) }
 
     Box(modifier = Modifier.fillMaxSize()) {
+
         Column(modifier = Modifier.fillMaxSize()) {
             // 1. 顶部车规级 Dock 导航栏 (Automotive Top Dock Bar)
             Row(
@@ -158,6 +159,7 @@ fun MainCockpitNavigationHost() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+
                 // 车机 Branding 图标与标题
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
