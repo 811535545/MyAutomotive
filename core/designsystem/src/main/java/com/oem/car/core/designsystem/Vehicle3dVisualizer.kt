@@ -11,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -18,6 +19,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -144,14 +148,14 @@ fun Vehicle3dVisualizerContent(
             .wrapContentHeight(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // 1. 车模视口 (固定高度 230.dp，配合外层滚动，绝不使用 weight 导致黑屏或截断)
+        // 1. 车模视口 (支持随 90°/270° 旋转动态自适应伸缩高度)
         VehicleCanvasViewport(
             state = state,
             titleText = titleText,
             gearText = gearText,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(230.dp)
+                .wrapContentHeight()
         )
 
         // 2. 底部控制台
@@ -173,17 +177,52 @@ private fun VehicleCanvasViewport(
 ) {
     val motionOffset by rememberSpeedMotionOffset(speed = state.speed)
 
+    // 支持 0°, 90°, 180°, 270°, 360° 动态平滑旋转动画
+    var targetRotation by remember { mutableFloatStateOf(0f) }
+    val animatedRotation by animateFloatAsState(
+        targetValue = targetRotation,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "Vehicle3dRotation"
+    )
+
+    // 判断当前旋转角度是否为竖向 (90° 或 270°)
+    val normalizedAngle = kotlin.math.abs(targetRotation.toInt()) % 180
+    val isVertical = (normalizedAngle in 45..135)
+
+    // 动态缩放比例：当旋转为竖向 (90° 或 270°) 时，缩放至 0.52f，配合 clipToBounds 彻底保证大灯光束与车头 100% 居中包含在 Canvas 内部，绝不越界覆盖顶部 UI
+    val dynamicScale by animateFloatAsState(
+        targetValue = if (isVertical) 0.52f else 1.0f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "DynamicScale"
+    )
+
+    // 动态撑高 Canvas 画布：横向角度(0°/180°/360°)为 95.dp，竖向角度(90°/270°)平滑扩充至 140.dp
+    val dynamicCanvasHeight by animateDpAsState(
+        targetValue = if (isVertical) 140.dp else 95.dp,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "DynamicCanvasHeight"
+    )
+
     Box(
         modifier = modifier
             .testTag("vehicle_3d_root")
             .background(Color(0xFF0F131A), shape = RoundedCornerShape(12.dp))
-            .padding(12.dp)
+            .padding(10.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            // 1. 顶部：标题 + 车门锁状态 (Row 左右分布，绝不覆盖车模)
+            // 1. 顶部：标题 + 车门锁状态 (Row 左右分布)
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -216,14 +255,14 @@ private fun VehicleCanvasViewport(
                 )
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
-            // 1.1 新增：精确显示 4 个车门（左前、右前、左后、右后）开启/关闭状态的 4 个独立 Text 指示器
+            // 1.1 精确显示 4 个车门（左前、右前、左后、右后）开启/关闭状态指示器
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color(0xFF141820), shape = RoundedCornerShape(6.dp))
-                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                    .padding(horizontal = 8.dp, vertical = 3.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -233,41 +272,92 @@ private fun VehicleCanvasViewport(
                 DoorStatusText(label = "右后", isOpen = state.isRearRightDoorOpen)
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
-            // 2. 中间：纯净的 3D 车模 Canvas 画布 (固定高度 105.dp，绝不使用 weight 导致黑屏)
+            // 1.2 0°, 90°, 180°, 270°, 360° 旋转视角快捷切换栏
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFF141820), shape = RoundedCornerShape(6.dp))
+                    .padding(horizontal = 6.dp, vertical = 2.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "🔄 视角",
+                    fontSize = 10.sp,
+                    color = Color(0xFF80D8FF),
+                    fontWeight = FontWeight.Bold
+                )
+
+                listOf(0f, 90f, 180f, 270f, 360f).forEach { angle ->
+                    val isSelected = (targetRotation % 360f == angle % 360f)
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                color = if (isSelected) Color(0xFF00E5FF).copy(alpha = 0.25f) else Color(0xFF1F2633),
+                                shape = RoundedCornerShape(4.dp)
+                            )
+                            .border(
+                                width = 1.dp,
+                                color = if (isSelected) Color(0xFF00E5FF) else Color(0xFF37474F),
+                                shape = RoundedCornerShape(4.dp)
+                            )
+                            .clickable { targetRotation = angle }
+                            .padding(horizontal = 6.dp, vertical = 2.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "${angle.toInt()}°",
+                            fontSize = 9.5.sp,
+                            color = if (isSelected) Color(0xFF00E5FF) else Color(0xFF90A4AE),
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(2.dp))
+
+            // 2. 中间：带平滑旋转与缩放复合变换的 3D 车模 Canvas 画布 (带 clipToBounds 边界裁剪拦截)
             Canvas(
                 modifier = Modifier
                     .testTag("vehicle_3d_canvas")
                     .fillMaxWidth()
-                    .height(105.dp)
+                    .height(dynamicCanvasHeight)
+                    .clipToBounds() // 物理边界硬隔离，禁止任何绘制像素越界覆盖外层 UI！
             ) {
                 val cx = size.width / 2f
                 val cy = size.height / 2f
 
-                if (state.isDriving) drawMotionWindLines(cx, cy, motionOffset)
-                drawVehicleBody(cx, cy, state.isDriving)
-                drawHeadlights(cx, cy, state.isFrontLeftLightOn, state.isFrontRightLightOn)
-                drawTailLights(cx, cy, state.isRearLeftLightOn, state.isRearRightLightOn)
-                drawDoors(cx, cy, state)
+                withTransform({
+                    rotate(degrees = animatedRotation, pivot = Offset(cx, cy))
+                    scale(scaleX = dynamicScale, scaleY = dynamicScale, pivot = Offset(cx, cy))
+                }) {
+                    if (state.isDriving) drawMotionWindLines(cx, cy, motionOffset)
+                    drawVehicleBody(cx, cy, state.isDriving)
+                    drawHeadlights(cx, cy, state.isFrontLeftLightOn, state.isFrontRightLightOn)
+                    drawTailLights(cx, cy, state.isRearLeftLightOn, state.isRearRightLightOn)
+                    drawDoors(cx, cy, state)
+                }
             }
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-            // 3. 底部：车速档位与胎压信息条 (独占一行，带独立背景，与车模彻底隔离、永不覆盖)
+            // 3. 底部：车速档位与胎压信息条
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .testTag("vehicle_3d_bottom_panel")
                     .background(Color(0xFF141820), shape = RoundedCornerShape(8.dp))
-                    .padding(horizontal = 10.dp, vertical = 6.dp),
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "🛞 胎压: ${String.format(Locale.US, "%.1f", state.tirePressure)} bar (正常)",
                     color = Color(0xFFB0BEC5),
-                    fontSize = 11.sp,
+                    fontSize = 10.sp,
                     modifier = Modifier.testTag("vehicle_3d_tire_pressure")
                 )
 
@@ -276,7 +366,7 @@ private fun VehicleCanvasViewport(
                 Text(
                     text = "🚀 $displaySpeed",
                     color = Color(0xFF00E5FF),
-                    fontSize = 12.sp,
+                    fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.testTag("vehicle_3d_speed_gear")
                 )
@@ -578,12 +668,12 @@ private fun DrawScope.drawVehicleBody(cx: Float, cy: Float, isDriving: Boolean) 
 }
 
 private fun DrawScope.drawHeadlights(cx: Float, cy: Float, leftOn: Boolean, rightOn: Boolean) {
-    // 前左大灯 + 光束
+    // 前左大灯 + 光束 (光束适度收拢，防止旋转 270° 时向顶部溢出)
     if (leftOn) {
         val path = Path().apply {
             moveTo(cx + 88f, cy - 15f)
-            lineTo(cx + 130f, cy - 30f)
-            lineTo(cx + 130f, cy - 5f)
+            lineTo(cx + 110f, cy - 25f)
+            lineTo(cx + 110f, cy - 5f)
             close()
         }
         drawPath(path = path, color = Color(0x3300E5FF))
@@ -598,8 +688,8 @@ private fun DrawScope.drawHeadlights(cx: Float, cy: Float, leftOn: Boolean, righ
     if (rightOn) {
         val path = Path().apply {
             moveTo(cx + 88f, cy + 15f)
-            lineTo(cx + 130f, cy + 5f)
-            lineTo(cx + 130f, cy + 30f)
+            lineTo(cx + 110f, cy + 5f)
+            lineTo(cx + 110f, cy + 25f)
             close()
         }
         drawPath(path = path, color = Color(0x3300E5FF))
